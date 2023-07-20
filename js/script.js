@@ -1,8 +1,3 @@
-// import { getDatabase, ref, set } from "firebase/database";
-// import app from "../firebaseConfig.js";
-
-
-
 // Data for the full-stack developer roadmap
 const roadmapData = [
   {
@@ -164,11 +159,33 @@ function generateRoadmap() {
   });
 }
 
-// Function to save the selected tutorial state in the Firebase Realtime Database
+// Function to save the selected tutorial state in the roadmapData object and Local Storage
 function saveTutorialSelection(topic, tutorial, isChecked) {
-  const database = getDatabase();
-  const tutorialsRef = ref(database, `selectedTutorials/${topic}/${tutorial}`);
-  set(tutorialsRef, isChecked);
+  roadmapData = roadmapData.map((section) => {
+    if (section.section === topic) {
+      return {
+        ...section,
+        topics: section.topics.map((topicData) => {
+          if (topicData.name === topic) {
+            return {
+              ...topicData,
+              tutorials: topicData.tutorials.map((t) => {
+                if (t === tutorial) {
+                  return isChecked ? t : '';
+                }
+                return t;
+              }),
+            };
+          }
+          return topicData;
+        }),
+      };
+    }
+    return section;
+  });
+
+  // You can save the roadmapData object to Local Storage to persist it across sessions
+  localStorage.setItem('roadmapData', JSON.stringify(roadmapData));
 }
 
 // Generate the nested lists of tutorials for each topic
@@ -179,14 +196,19 @@ function generateTopicLists(topics) {
       <details>
         <summary>${topic.name}</summary>
         <ul>
-          ${topic.tutorials.map((tutorial) => `
-            <li>
-              <label>
-                <input type="checkbox">
-                ${tutorial}
-              </label>
-            </li>
-          `).join('')}
+          ${topic.tutorials
+            .filter((tutorial) => tutorial !== '')
+            .map(
+              (tutorial) => `
+                <li>
+                  <label>
+                    <input type="checkbox" checked>
+                    ${tutorial}
+                  </label>
+                </li>
+              `
+            )
+            .join('')}
         </ul>
       </details>
     `;
@@ -195,4 +217,10 @@ function generateTopicLists(topics) {
 }
 
 // Generate the roadmap on page load
-document.addEventListener('DOMContentLoaded', generateRoadmap);
+document.addEventListener('DOMContentLoaded', () => {
+  const savedRoadmap = localStorage.getItem('roadmapData');
+  if (savedRoadmap) {
+    roadmapData = JSON.parse(savedRoadmap);
+  }
+  generateRoadmap();
+});
