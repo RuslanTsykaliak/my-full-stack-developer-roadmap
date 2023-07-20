@@ -1,0 +1,98 @@
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+nav {
+  background-color: #f7f7f7;
+  padding: 10px 0;
+  text-align: center;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+nav a {
+  color: #333;
+  text-decoration: none;
+  padding: 5px 10px;
+}
+
+nav a:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+main {
+  padding: 20px;
+}
+
+h2 {
+  border-bottom: 1px solid #ddd;
+}
+
+ul {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+
+/* Additional styles for the checkboxes */
+li input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Additional styles for the nested lists */
+details {
+  margin-bottom: 10px;
+}
+
+details summary {
+  cursor: pointer;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Remove arrow for nested lists inside details */
+details ul {
+  list-style: none;
+  padding-left: 0; /* Set to 0 to remove indentation */
+}
+
+/* Additional styles for the finished tutorials */
+details li {
+  display: flex;
+  align-items: center;
+}
+
+details li input[type="checkbox"]:checked + label {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+/* Additional styles for the nested lists */
+details ul ul {
+  list-style: none;
+}
+
+details ul ul li::before {
+  content: none;
+}
