@@ -1,9 +1,9 @@
-import app, { handleTutorialSelection } from "../firebaseConfig.js";
+import { getDatabase, ref, set } from "firebase/database";
 
 // Update the handleTutorialSelection function to save data in Firebase Realtime Database
 function handleTutorialSelection(topic, tutorial, isChecked) {
-  const database = firebase.database();
-  const selectedTutorialsRef = database.ref('selectedTutorials');
+  const database = getDatabase();
+  const selectedTutorialsRef = ref(database, 'selectedTutorials');
 
   selectedTutorialsRef.child(topic).transaction((topicTutorials) => {
     if (!topicTutorials) {
@@ -22,6 +22,7 @@ function handleTutorialSelection(topic, tutorial, isChecked) {
     return topicTutorials;
   });
 }
+
 
 
 // Data for the full-stack developer roadmap
