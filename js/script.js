@@ -1,27 +1,5 @@
-import { getDatabase, ref, set } from "firebase/database";
-
-// Update the handleTutorialSelection function to save data in Firebase Realtime Database
-function handleTutorialSelection(topic, tutorial, isChecked) {
-  const database = getDatabase();
-  const selectedTutorialsRef = ref(database, 'selectedTutorials');
-
-  selectedTutorialsRef.child(topic).transaction((topicTutorials) => {
-    if (!topicTutorials) {
-      topicTutorials = [];
-    }
-
-    if (isChecked) {
-      topicTutorials.push(tutorial);
-    } else {
-      const index = topicTutorials.indexOf(tutorial);
-      if (index !== -1) {
-        topicTutorials.splice(index, 1);
-      }
-    }
-
-    return topicTutorials;
-  });
-}
+// import { getDatabase, ref, set } from "firebase/database";
+// import app from "../firebaseConfig.js";
 
 
 
@@ -173,6 +151,24 @@ function generateRoadmap() {
     `;
     main.appendChild(section);
   });
+
+  // Add event listeners to checkboxes
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', (event) => {
+      const topic = checkbox.parentElement.parentElement.querySelector('summary').textContent;
+      const tutorial = checkbox.parentElement.textContent.trim();
+      const isChecked = checkbox.checked;
+      saveTutorialSelection(topic, tutorial, isChecked);
+    });
+  });
+}
+
+// Function to save the selected tutorial state in the Firebase Realtime Database
+function saveTutorialSelection(topic, tutorial, isChecked) {
+  const database = getDatabase();
+  const tutorialsRef = ref(database, `selectedTutorials/${topic}/${tutorial}`);
+  set(tutorialsRef, isChecked);
 }
 
 // Generate the nested lists of tutorials for each topic
@@ -186,7 +182,7 @@ function generateTopicLists(topics) {
           ${topic.tutorials.map((tutorial) => `
             <li>
               <label>
-                <input type="checkbox" onchange="handleTutorialSelection('${topic.name}', '${tutorial}', this.checked)">
+                <input type="checkbox">
                 ${tutorial}
               </label>
             </li>
@@ -200,4 +196,3 @@ function generateTopicLists(topics) {
 
 // Generate the roadmap on page load
 document.addEventListener('DOMContentLoaded', generateRoadmap);
-
